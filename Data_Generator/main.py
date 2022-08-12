@@ -87,19 +87,10 @@ def construct_master_list(row_count):
         last_name = get_last_name()
         full_name = f"{first_name} {last_name}"
         row.append(full_name)
-<<<<<<< HEAD
-
 
         #This goes after all the function calls/value assignments
-=======
-        
->>>>>>> main
-        master_list.append(row)
-         
-    
 
 #### WRITE_TO_FILE ######
-
 
 
 
