@@ -1,6 +1,7 @@
 import csv
 from faker import Faker
 import csv
+import random
 import uuid ##txn_code
 from timeit import default_timer as timer ##performance measuring
 
@@ -41,8 +42,27 @@ def uuid_id_generator():
 
         
 #### PRODUCT_GENERATOR ### (return -> string)
-def product_function(): 
-    pass
+def productGen():
+    fake = Faker()
+    f = open("books.csv")
+    lst = [[]] #id, name, category, price
+    random.seed(0)
+    Faker.seed(0)
+    c=0
+    for x in f:
+        inList = []
+        line = x.split(',')
+        if(c == 0):
+            c = 1
+            continue
+        inList.append(str(fake.ean(13)))
+        inList.append(line[0])
+        inList.append(line[-3])
+        inList.append(str("$"+str(random.randint(15,40))+".99"))
+        lst.append(inList)
+    f.close()
+    return lst
+
     #return product
 
 #### NAME_GENERATOR ####
@@ -55,7 +75,7 @@ def get_last_name():
 
 
 
-#### MASTER_LIST_CONSTRUCTION #####
+#### MASTER_LIST_CONSTRUCTOR #####
 
 def construct_master_list(row_count):
     for _ in range(1, row_count):
@@ -67,9 +87,13 @@ def construct_master_list(row_count):
         last_name = get_last_name()
         full_name = f"{first_name} {last_name}"
         row.append(full_name)
+<<<<<<< HEAD
 
 
         #This goes after all the function calls/value assignments
+=======
+        
+>>>>>>> main
         master_list.append(row)
          
     
@@ -90,3 +114,5 @@ print(f"Approximate Processing Time: {end - start}")
 
 #Show Master List
 print(master_list)
+
+
