@@ -45,7 +45,7 @@ def product_function():
     pass
     #return product
 
-#### NAME_GENERATION ####
+#### NAME_GENERATOR ####
 
 def get_first_name():
         return name_faker.unique.first_name()
@@ -55,7 +55,7 @@ def get_last_name():
 
 
 
-#### MASTER_LIST_CONSTRUCTION #####
+#### MASTER_LIST_CONSTRUCTOR #####
 
 def construct_master_list(row_count):
     for _ in range(1, row_count):
@@ -68,9 +68,6 @@ def construct_master_list(row_count):
         full_name = f"{first_name} {last_name}"
         row.append(full_name)
         
-        product = 'Pencil'
-        row.append(product)
-    
         master_list.append(row)
          
     
@@ -88,5 +85,6 @@ end = timer()
 
 #Print elapsed time (seconds)
 print(f"Approximate Processing Time: {end - start}")
+
 #Show Master List
 print(master_list)
