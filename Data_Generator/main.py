@@ -18,7 +18,7 @@ start = timer()
 master_list = []
 
 
-#### ID_GENERATION ####
+#### ID_GENERATIOR ####
 
 #Dictionary for dynamic id printing (reference):
 id_dict = {
@@ -45,7 +45,7 @@ def product_function():
     pass
     #return product
 
-#### NAME_GENERATION ####
+#### NAME_GENERATOR ####
 
 def get_first_name():
         return name_faker.unique.first_name()
@@ -67,10 +67,9 @@ def construct_master_list(row_count):
         last_name = get_last_name()
         full_name = f"{first_name} {last_name}"
         row.append(full_name)
-        
-        product = 'Pencil'
-        row.append(product)
-    
+
+
+        #This goes after all the function calls/value assignments
         master_list.append(row)
          
     
@@ -88,5 +87,6 @@ end = timer()
 
 #Print elapsed time (seconds)
 print(f"Approximate Processing Time: {end - start}")
+
 #Show Master List
 print(master_list)
