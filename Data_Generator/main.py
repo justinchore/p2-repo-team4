@@ -5,6 +5,10 @@ import random
 import uuid ##txn_code
 from timeit import default_timer as timer ##performance measuring
 
+from random import randrange
+from datetime import timedelta
+from datetime import datetime
+
 
 
 #### SETUP #####
@@ -31,6 +35,11 @@ DICT =  {'USA' : ["New York","Chicago","San Diego","San Jose","Dallas","Florida"
         'Japan': ["Tokyo","Osaka","Nagasaki","Hiroshima","Bristol","Kobe","Yokohama","Toyama","Kamakura","Kure"],
         'Mexico':["Mexico City","Monterrey","Merida","Cancun","Tijuana","Leon","Tampico","Bacalar","Vallodolid","Zopopan"]
         }
+
+### Ecommerce list ###
+ecommerce_fake_lst = ['ibay', 'poogle', 'metube', 'nicebook', 'rain forest inc', 'pear','solid buy','bacon city','CD','book hut',
+'spoon express','sporks and more','tarjay','bed bath and books','big books','paper and more','kids reading hut','page by page','hooked on reading',
+'iDea','shop books','barnes and fish','rell','bulk buy','speed readers','dead tree books','collector\'s authority','the twig book shop']
 
 
 #### ID_GENERATION ####
@@ -89,7 +98,30 @@ def get_last_name():
         return name_faker.unique.last_name()
 
 
+### Random date generator 2021 ###
+def random_date(start, end):
+    
+    #returns a random datetime between two datetime objects.
+    
+    delta = end - start
+    int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
+    random_second = randrange(int_delta)
+    return start + timedelta(seconds=random_second)
 
+def print_date():    
+    #prints/returns a random datetime object within the year 2021
+    d1 = datetime.strptime('1/1/2021 12:00 AM', '%m/%d/%Y %I:%M %p')
+    d2 = datetime.strptime('12/31/2021 11:59 PM', '%m/%d/%Y %I:%M %p')
+    randomized_date2021 = random_date(d1, d2)
+    print(randomized_date2021)
+    return randomized_date2021
+
+    ### Ecommerce randomizer ###
+def ecommerce_randomizer_lst():
+    ecommerce_random_output = (random.choice(ecommerce_fake_lst))
+    print(ecommerce_random_output)
+    return ecommerce_random_output
+    
 #### CITY_COUNTRY _GENERATOR ####
 def getCountry():
     random_country = random.choice(list(DICT.keys()))
