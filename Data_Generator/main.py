@@ -11,12 +11,21 @@ from timeit import default_timer as timer ##performance measuring
 
 #Faker instances
 name_faker = Faker(["en-US","fr_FR", "it_IT", "de_DE", "es_CO","de_CH", "de_DE", "es_MX" ])
+fake = Faker()
 
 #Timer start for performance testing
 start = timer()
 
 #All "base" data will go in here
 master_list = []
+
+###### LOCATION DICTIONARY #########
+DICT =  {'USA' : ["New York","Chicago","San Diego","San Jose","Dallas","Florida","Washington DC","Orlando","Phoenix","Houston"],
+        'ITALY' :["Rome","Florence","Milan","Naples","Verona","Genoa","Turin","Perugia","capri","Bologna"],
+        'NIGERIA':["lagos","Abuja","Jos","Ilorin","Ibadan","Enugu","Benin city","Port Harcourt","lokoja","Uyo"],
+        'ENGLAND': ["Manchester","London","Birmingham","Liverpool","Bristol","Oxford","cambridge","cardiff","Brighton","Leeds"],
+        'SPAIN':["Madrid","Bilbao","Barcelona","Seville","Granada","Valencia","Salamanca","Toledo","Malaga","Cordoba"]
+        }
 
 
 #### ID_GENERATIOR ####
@@ -28,6 +37,7 @@ id_dict = {
         "p": 0, #productid
         "t": 0 #txnid
         }
+
 
 
 #For incremented IDs: (return -> int) When calling, see id_dict for arguments
@@ -75,20 +85,42 @@ def get_last_name():
 
 
 
+#### CITY_COUNTRY _GENERATOR ####
+def getCountry():
+    random_country = random.choice(list(DICT.keys()))
+    return random_country
+
+def getCity(country):
+    random_city = DICT[country][random.randint(0, len(DICT)-1)]
+    return  random_city
+
+
+
+
 #### MASTER_LIST_CONSTRUCTOR #####
 
 def construct_master_list(row_count):
     for _ in range(1, row_count):
         row = []
+
         customer_id = incr_id("c")
         row.append(customer_id)
-    
+
         first_name = get_first_name()
         last_name = get_last_name()
         full_name = f"{first_name} {last_name}"
         row.append(full_name)
 
         #This goes after all the function calls/value assignments
+
+        country = getCountry()
+        city = getCity(country)
+        row.append(city)
+        row.append(country)
+
+        master_list.append(row)
+
+
 
 #### WRITE_TO_FILE ######
 
