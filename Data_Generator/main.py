@@ -24,11 +24,11 @@ start = timer()
 master_list = []
 
 ###### LOCATION DICTIONARY #########
-DICT =  {'USA' : ["New York","Chicago","San Diego","San Jose","Dallas","Florida","Washington DC","Orlando","Phoenix","Houston"],
-        'ITALY' :["Rome","Florence","Milan","Naples","Verona","Genoa","Turin","Perugia","capri","Bologna"],
-        'NIGERIA':["lagos","Abuja","Jos","Ilorin","Ibadan","Enugu","Benin city","Port Harcourt","lokoja","Uyo"],
-        'ENGLAND': ["Manchester","London","Birmingham","Liverpool","Bristol","Oxford","cambridge","cardiff","Brighton","Leeds"],
-        'SPAIN':["Madrid","Bilbao","Barcelona","Seville","Granada","Valencia","Salamanca","Toledo","Malaga","Cordoba"],
+DICT =  {'United States' : ["New York","Chicago","San Diego","San Jose","Dallas","Florida","Washington DC","Orlando","Phoenix","Houston"],
+        'Italy' :["Rome","Florence","Milan","Naples","Verona","Genoa","Turin","Perugia","capri","Bologna"],
+        'Nigeria':["lagos","Abuja","Jos","Ilorin","Ibadan","Enugu","Benin city","Port Harcourt","lokoja","Uyo"],
+        'England': ["Manchester","London","Birmingham","Liverpool","Bristol","Oxford","cambridge","cardiff","Brighton","Leeds"],
+        'Spain':["Madrid","Bilbao","Barcelona","Seville","Granada","Valencia","Salamanca","Toledo","Malaga","Cordoba"],
          'France' : ["Paris","Nice","Bordeaux","Toulouse","Nantes","Marseille","Lille","Strasbourg","Nice","Lyon"],
         'Germany' :["Berlin","Cologne","Frankfurt","Munich","Hamburg","Leipzig","Stuttgart","Bremen","Nuremberg","mainz"],
         'Portugal':["Lisbon","Braga","Porto","Guimaraes","Aviero","Faro","Tomar","Elvas","Tavira","Evora"],
@@ -88,6 +88,9 @@ def productGen():
     return lst
 
     #return product
+    
+def get_quantity():
+        return random.randint(1, 10)
 
 #### NAME_GENERATOR ####
 
@@ -113,13 +116,13 @@ def print_date():
     d1 = datetime.strptime('1/1/2021 12:00 AM', '%m/%d/%Y %I:%M %p')
     d2 = datetime.strptime('12/31/2021 11:59 PM', '%m/%d/%Y %I:%M %p')
     randomized_date2021 = random_date(d1, d2)
-    print(randomized_date2021)
+#     print(randomized_date2021)
     return randomized_date2021
 
     ### Ecommerce randomizer ###
 def ecommerce_randomizer_lst():
     ecommerce_random_output = (random.choice(ecommerce_fake_lst))
-    print(ecommerce_random_output)
+#     print(ecommerce_random_output)
     return ecommerce_random_output
     
 #### CITY_COUNTRY _GENERATOR ####
@@ -131,8 +134,9 @@ def getCity(country):
     random_city = DICT[country][random.randint(0, len(DICT)-1)]
     return  random_city
 
-
-
+#### PAYMENTS ####
+def get_success_or_fail():
+    return random.choices(['Y', 'N'], weights=(70, 30))    
 
 #### MASTER_LIST_CONSTRUCTOR #####
 
@@ -160,12 +164,83 @@ def construct_master_list(row_count):
 
 
 #### WRITE_TO_FILE ######
+def create_csv_data():
+        construct_master_list(500)
 
+        header = ['order_id',
+                  'customer_id', 
+                  'customer_name', 
+                  'product_id', 
+                  'product_name', 
+                  'product_category',
+                  'payment_type',
+                  'qty',
+                  'price',
+                  'datetime',
+                  'city',
+                  'country',
+                  'ecommerce_website_name',
+                  'payment_txn_id',
+                  'payment_txn_success',
+                  'failure_reason'
+                  ]
+        
+        with open('order_data.csv', 'w', encoding='UTF8', newline='') as f:
+                writer = csv.writer(f)
+                products_list = productGen()
+                # write the header
+                writer.writerow(header)
+                random_order = []
+                for _ in range(0, 10):
+                        
+                        #Randomly generate a user from master list
+                        user_idx = random.randint(0, 499)
+                        random_user = master_list[user_idx]
+                        userid = random_user[0]
+                        username = random_user[1]
+                        usercity = random_user[2]
+                        usercountry = random_user[3]
+                        #Generate incremented order id, insert into random_order[0]
+                        orderid = incr_id("o")
+                        #[0, 0, Agnes, ###PRODUCT STUFF #####, Starsburg, France]
+                        #Randomly generate productid, product_name, product_category
+                        random_product = random.choice(products_list)
+                        # [452345435, "NAME OF PRODUCT", "Category", price]
+                        # #We need to insert the contents of random_product into INDEX 3 inside random_order
+                        productid = random_product[0]
+                        productname = random_product[1]
+                        productcat = random_product[2]
+                        productprice = random_product[3]
+                        #Quantity
+                        quantity = get_quantity()
+                        #Datetime
+                        datetime = print_date()
+                        #Ecommerce website
+                        ecom_website = ecommerce_randomizer_lst()
+                        #Payment TXN id
+                        txnid = uuid_id_generator()
+                        #Payment Success
+                        paymentSuc = random.randint(0,1)
+                        if paymentSuc == 0:
+                                paymentSuc = 'Y'
+                        else: 
+                                paymentSuc = 'N'
+                                #Reason?
+                                
+                                
+                                
+                        # 
+
+                        # write 1 row
+                        writer.writerow(random_order)
+        
+        
+                
 
 
 #Call construct_master_list
-construct_master_list(500)
 
+# create_csv_data()
 #Timer end
 end = timer()
 
@@ -173,6 +248,8 @@ end = timer()
 print(f"Approximate Processing Time: {end - start}")
 
 #Show Master List
-print(master_list)
+# print(master_list[:s50])
 
-
+for _ in range (0, 50):
+        value = get_success_or_fail()
+        print(value)
