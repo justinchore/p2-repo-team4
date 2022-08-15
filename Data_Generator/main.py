@@ -136,7 +136,11 @@ def getCity(country):
 
 #### PAYMENTS ####
 def get_success_or_fail():
-    return random.choices(['Y', 'N'], weights=(70, 30))    
+    lst = ["Card declined", "Failed to connect to server"]
+    succ = random.choices(['Y', 'N'], weights=(90,30))[0]
+    if succ =='Y':
+        return ('Y',None)
+    return (succ, random.choice(lst))
 
 #### MASTER_LIST_CONSTRUCTOR #####
 
@@ -191,11 +195,10 @@ def create_csv_data():
                 # write the header
                 writer.writerow(header)
                 random_order = []
-                for _ in range(0, 10):
+                for _ in range(0, 10000):
                         
                         #Randomly generate a user from master list
-                        user_idx = random.randint(0, 499)
-                        random_user = master_list[user_idx]
+                        random_user = random.choice(master_list)
                         userid = random_user[0]
                         username = random_user[1]
                         usercity = random_user[2]
@@ -205,6 +208,9 @@ def create_csv_data():
                         #[0, 0, Agnes, ###PRODUCT STUFF #####, Starsburg, France]
                         #Randomly generate productid, product_name, product_category
                         random_product = random.choice(products_list)
+                        while(not len(random_product)>3):
+                            random_product = random.choice(products_list)
+                        
                         # [452345435, "NAME OF PRODUCT", "Category", price]
                         # #We need to insert the contents of random_product into INDEX 3 inside random_order
                         productid = random_product[0]
@@ -220,13 +226,10 @@ def create_csv_data():
                         #Payment TXN id
                         txnid = uuid_id_generator()
                         #Payment Success
-                        paymentSuc = random.randint(0,1)
-                        if paymentSuc == 0:
-                                paymentSuc = 'Y'
-                        else: 
-                                paymentSuc = 'N'
-                                #Reason?
-                                
+                        paymentSuc = get_success_or_fail()#(Y/N, reason for N)
+                        paymenttype = random.choice(["1", "2", "3"])
+                        random_order = [orderid, userid, username, productid, productname, productcat, paymenttype, quantity, 
+                                        productprice, datetime, usercity, usercountry, ecom_website, txnid, paymentSuc[0], paymentSuc[1]]
                                 
                                 
                         # 
@@ -240,7 +243,7 @@ def create_csv_data():
 
 #Call construct_master_list
 
-# create_csv_data()
+create_csv_data()
 #Timer end
 end = timer()
 
@@ -249,7 +252,3 @@ print(f"Approximate Processing Time: {end - start}")
 
 #Show Master List
 # print(master_list[:s50])
-
-for _ in range (0, 50):
-        value = get_success_or_fail()
-        print(value)
