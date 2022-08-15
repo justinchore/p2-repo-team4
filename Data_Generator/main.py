@@ -37,9 +37,10 @@ DICT =  {'United States' : ["New York","Chicago","San Diego","San Jose","Dallas"
         }
 
 ### Ecommerce list ###
-ecommerce_fake_lst = ['ibay', 'poogle', 'metube', 'nicebook', 'rain forest inc', 'pear','solid buy','bacon city','CD','book hut',
-'spoon express','sporks and more','tarjay','bed bath and books','big books','paper and more','kids reading hut','page by page','hooked on reading',
-'iDea','shop books','barnes and fish','rell','bulk buy','speed readers','dead tree books','collector\'s authority','the twig book shop']
+ecommerce_fake_lst = ['Ebay.com', 'Abebooks.com', 'Albris.com', 'Bookoutlet.com', 'Kidsbooks.com', 'Walmart.com','Amazon.com','Booktopia.com',
+'Thriftbooks.com','Booksamillion.com','Amazonbooks.com','Barnesandnoble.com','Target.com','Costco.com','Daedalus Books','Powellsbooks.com',
+'Thestrand.com','Hudsonbooksellers.com','Wordery.com','Hive.com','Waterstones.com','Chapters.indigo.ca','Mcnallyrobinson.com','Audible.com',
+'Audiobooks.com','Audiobooksnow.com','Indiebound.com','ChronicleBooks.com']
 
 
 #### ID_GENERATIOR ####
