@@ -24,7 +24,12 @@ DICT =  {'USA' : ["New York","Chicago","San Diego","San Jose","Dallas","Florida"
         'ITALY' :["Rome","Florence","Milan","Naples","Verona","Genoa","Turin","Perugia","capri","Bologna"],
         'NIGERIA':["lagos","Abuja","Jos","Ilorin","Ibadan","Enugu","Benin city","Port Harcourt","lokoja","Uyo"],
         'ENGLAND': ["Manchester","London","Birmingham","Liverpool","Bristol","Oxford","cambridge","cardiff","Brighton","Leeds"],
-        'SPAIN':["Madrid","Bilbao","Barcelona","Seville","Granada","Valencia","Salamanca","Toledo","Malaga","Cordoba"]
+        'SPAIN':["Madrid","Bilbao","Barcelona","Seville","Granada","Valencia","Salamanca","Toledo","Malaga","Cordoba"],
+         'France' : ["Paris","Nice","Bordeaux","Toulouse","Nantes","Marseille","Lille","Strasbourg","Nice","Lyon"],
+        'Germany' :["Berlin","Cologne","Frankfurt","Munich","Hamburg","Leipzig","Stuttgart","Bremen","Nuremberg","mainz"],
+        'Portugal':["Lisbon","Braga","Porto","Guimaraes","Aviero","Faro","Tomar","Elvas","Tavira","Evora"],
+        'Japan': ["Tokyo","Osaka","Nagasaki","Hiroshima","Bristol","Kobe","Yokohama","Toyama","Kamakura","Kure"],
+        'Mexico':["Mexico City","Monterrey","Merida","Cancun","Tijuana","Leon","Tampico","Bacalar","Vallodolid","Zopopan"]
         }
 
 
