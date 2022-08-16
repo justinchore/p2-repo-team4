@@ -137,7 +137,7 @@ def getCity(country):
 
 #### PAYMENTS ####
 def get_success_or_fail():
-    lst = ["Card declined", "Failed to connect to server"]
+    lst = ["Card declined", "Failed to connect to server", "Invalid CVV", "Invalid billing address"]
     succ = random.choices(['Y', 'N'], weights=(90,30))[0]
     if succ =='Y':
         return ('Y',None)
@@ -196,7 +196,7 @@ def create_csv_data():
                 # write the header
                 writer.writerow(header)
                 random_order = []
-                for _ in range(0, 10000):
+                for _ in range(0, 15000):
                         
                         #Randomly generate a user from master list
                         random_user = random.choice(master_list)
@@ -206,7 +206,6 @@ def create_csv_data():
                         usercountry = random_user[3]
                         #Generate incremented order id, insert into random_order[0]
                         orderid = incr_id("o")
-                        #[0, 0, Agnes, ###PRODUCT STUFF #####, Starsburg, France]
                         #Randomly generate productid, product_name, product_category
                         random_product = random.choice(products_list)
                         while(not len(random_product)>3):
@@ -232,8 +231,6 @@ def create_csv_data():
                         random_order = [orderid, userid, username, productid, productname, productcat, paymenttype, quantity, 
                                         productprice, datetime, usercity, usercountry, ecom_website, txnid, paymentSuc[0], paymentSuc[1]]
                                 
-                                
-                        # 
 
                         # write 1 row
                         writer.writerow(random_order)
@@ -253,3 +250,15 @@ print(f"Approximate Processing Time: {end - start}")
 
 #Show Master List
 # print(master_list[:s50])
+
+##Ideas for rogue data:
+# Price without "$"
+# Datetime in a different format
+# Adding middlename to name
+
+##Rogue data:
+## if count is 150000:
+    ## 5% of 15000 = 750
+    ## 15000 / 750 = 20 (EVERY MULTIPLE OF 20
+    ## if current_num % roundown(count / count * 0.05) == 0: ROGUE DATA
+    
