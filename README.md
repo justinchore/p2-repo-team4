@@ -1,10 +1,12 @@
-# Project Title
+# Book Order Data Generator
 
-Simple overview of use/purpose.
+Python data generator with cvs write/read functionality
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
+* Produces between 10,000 and 15,000 records
+* Adheres to 16 column types (ids, quantity, productname, etc.)
+* Implemented built-in rogue data generator at 5% intervals 
 
 ## Getting Started
 
