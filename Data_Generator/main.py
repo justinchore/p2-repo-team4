@@ -217,7 +217,7 @@ def create_csv_data():
                 # write the header
                 writer.writerow(header)
                 random_order = []
-                for n in range(0, 20000):
+                for n in range(0, 15000):
                         
                         #Randomly generate a user from master list
                         random_user = random.choice(master_list)
