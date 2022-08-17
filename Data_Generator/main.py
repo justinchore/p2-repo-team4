@@ -217,7 +217,7 @@ def create_csv_data():
                 # write the header
                 writer.writerow(header)
                 random_order = []
-                random_total = random.randint(10000, 15000)
+                random_total = 15000
                 for n in range(0, random_total):
                         
                         #Randomly generate a user from master list
