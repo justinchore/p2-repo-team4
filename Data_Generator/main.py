@@ -248,7 +248,7 @@ def create_csv_data():
                         txnid = uuid_id_generator()
                         #Payment Success
                         paymentSuc = get_success_or_fail()#(Y/N, reason for N)
-                        paymenttype = random.choice(["1", "2", "3"])
+                        paymenttype = random.choice(["Paypal", "Credit Card", "Debit Card", "Amazon Pay", "Apple Pay"])
                         random_order = [orderid, userid, username, productid, productname, productcat, paymenttype, quantity, 
                                         productprice, datetime, usercity, usercountry, ecom_website, txnid, paymentSuc[0], paymentSuc[1]]
                         
