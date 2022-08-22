@@ -1,6 +1,6 @@
 # Book Order Data Generator
 
-Python data generator with cvs write/read functionality
+Python data generator with write/read functionality
 
 ## Description
 
