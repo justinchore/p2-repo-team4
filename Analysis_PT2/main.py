@@ -87,14 +87,14 @@ date_formatted_orders_rdd = orders_df.rdd.map(lambda x : rdd_date_format(x))
 date_formatted_orders_rdd.cache()
 #Create DataFrame
 orders_df_w_date = spark.createDataFrame(date_formatted_orders_rdd, orders_df.schema)
-#Apply filters
+#Apply filters (feel free to add more here)
 clean_DF = orders_df_w_date.filter(txn_success_filter)\
     .filter(col("payment_txn_id")\
     .rlike(txn_id_regex))\
     .filter(col("country(state)").isin(valid_states))\
     .filter(col("product_category").isin(valid_categories))\
     .cache()       
-# clean_DF.show()
+clean_DF.show()
 
-#############START QUERIES HERE##################
+#############START QUERIES HERE################## cd into Analysis_PT2 to run!
 
