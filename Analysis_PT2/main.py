@@ -13,12 +13,21 @@ spark = SparkSession.builder.master("local")\
 spark.sparkContext.setLogLevel("WARN")
 
 #Read file with inferred Schema:
-#Comment out others and insert your file initialization here:
+#Comment out others and run your csv file initialization here:
 
+#JUSTINS SPARK.READ:
 orders_df = spark.read.format("csv")\
     .option("header", "true")\
     .option("inferSchema", "true")\
     .load("file:/home/jcho/project_2/p2_Team2_Data.csv")
+
+#JORDANS SPARK.READ:
+
+#ADETUNJIS SPARK.READ:
+
+#ANDREWS SPARK.READ:
+
+#NILESHS SPARK.READ:
     
 '''
 What is the top selling category of items? Per Country? JORDAN
