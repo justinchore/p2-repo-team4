@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from datetime import datetime
 # from itertools import count
 # from sqlite3 import Timestamp
@@ -162,3 +163,17 @@ formatted_time_df.groupBy(hour("timestamp").alias("hour"))\
     .agg(count("order_id").alias('order_traffic'))\
     .sort('hour')\
     .show()    
+    
+######What states with the highest traffic of sales
+df.createOrReplaceTempView("table")
+
+highest_traffic_state = spark.sql(" select state , count(state) as qty  from table where state IN ('South Carolina','Mississippi','Virginia','West Virginia','kentucky','Alabama','North Carolina','Arkansas','Louisiana','Tennessee','Florida','Georgia','Hawaii') group by state order by qty desc")
+highest_traffic_state.show()
+
+######What cities with the highest traffic of sales
+highest_traffic_city = spark.sql("select city, count(city) as qty from table group by city order by qty desc ")
+highest_traffic_city.show()
+
+"""highest_traffic_state.coalesce(1).write.csv("file:/USER/output_states")
+highest_traffic_city.coalesce(1).write.csv("file:/USER/output_city")"""
+>>>>>>> 9db2b28789aa868428245468e5a0a103226fd8e0

@@ -22,6 +22,8 @@ start = timer()
 master_list = []
 
 ###### LOCATION DICTIONARY #########
+
+
 DICT =  {'United States' : ["New York","Chicago","San Diego","San Jose","Dallas","Florida","Washington DC","Orlando","Phoenix","Houston"],
         'Italy' :["Rome","Florence","Milan","Naples","Verona","Genoa","Turin","Perugia","capri","Bologna"],
         'Nigeria':["lagos","Abuja","Jos","Ilorin","Ibadan","Enugu","Benin city","Port Harcourt","lokoja","Uyo"],
