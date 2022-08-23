@@ -1,13 +1,11 @@
 import csv
 from faker import Faker
-import csv
 import random
-import uuid ##txn_code
+import uuid
+from random import randrange
+from datetime import timedelta, datetime
 from timeit import default_timer as timer ##performance measuring
 
-from random import randrange
-from datetime import timedelta
-from datetime import datetime
 
 
 
@@ -39,9 +37,10 @@ DICT =  {'United States' : ["New York","Chicago","San Diego","San Jose","Dallas"
         }
 
 ### Ecommerce list ###
-ecommerce_fake_lst = ['ibay', 'poogle', 'metube', 'nicebook', 'rain forest inc', 'pear','solid buy','bacon city','CD','book hut',
-'spoon express','sporks and more','tarjay','bed bath and books','big books','paper and more','kids reading hut','page by page','hooked on reading',
-'iDea','shop books','barnes and fish','rell','bulk buy','speed readers','dead tree books','collector\'s authority','the twig book shop']
+ecommerce_fake_lst = ['Ebay.com', 'Abebooks.com', 'Albris.com', 'Bookoutlet.com', 'Kidsbooks.com', 'Walmart.com','Amazon.com','Booktopia.com',
+'Thriftbooks.com','Booksamillion.com','Amazonbooks.com','Barnesandnoble.com','Target.com','Costco.com','Daedalus Books','Powellsbooks.com',
+'Thestrand.com','Hudsonbooksellers.com','Wordery.com','Hive.com','Waterstones.com','Chapters.indigo.ca','Mcnallyrobinson.com','Audible.com',
+'Audiobooks.com','Audiobooksnow.com','Indiebound.com','ChronicleBooks.com']
 
 
 #### ID_GENERATIOR ####
@@ -118,13 +117,11 @@ def print_date():
     d1 = datetime.strptime('1/1/2021 12:00 AM', '%m/%d/%Y %I:%M %p')
     d2 = datetime.strptime('12/31/2021 11:59 PM', '%m/%d/%Y %I:%M %p')
     randomized_date2021 = random_date(d1, d2)
-#     print(randomized_date2021)
     return randomized_date2021
 
-    ### Ecommerce randomizer ###
+### Ecommerce randomizer ###
 def ecommerce_randomizer_lst():
     ecommerce_random_output = (random.choice(ecommerce_fake_lst))
-#     print(ecommerce_random_output)
     return ecommerce_random_output
     
 #### CITY_COUNTRY _GENERATOR ####
@@ -138,11 +135,36 @@ def getCity(country):
 
 #### PAYMENTS ####
 def get_success_or_fail():
-    lst = ["Card declined", "Failed to connect to server"]
+    lst = ["Card declined", "Failed to connect to server", "Invalid CVV", "Invalid billing address"]
     succ = random.choices(['Y', 'N'], weights=(90,30))[0]
     if succ =='Y':
         return ('Y',None)
     return (succ, random.choice(lst))
+
+
+#### ROGUE DATA ####
+def rogue_date():
+   month = random.randint(1,12)
+   day = random.randint(1,28)
+   x = datetime(2022, month, day)
+   return x.strftime("%A, %b, %y")
+    
+def rogue_data(lst):
+    choice = random.choice(['d', 'p', 'c', 'q', 'e'])
+    if choice == 'd':
+        r_date = rogue_date()
+        lst[9] = r_date
+    elif choice == 'p':
+        lst[8] = lst[8][1:]
+    elif choice == 'q':
+        lst[7] = -1000
+    elif choice == 'c':
+        lst[5] = ''
+    elif choice == 'e':
+        lst[12] = None
+    
+    
+    return lst
 
 #### MASTER_LIST_CONSTRUCTOR #####
 
@@ -197,7 +219,8 @@ def create_csv_data():
                 # write the header
                 writer.writerow(header)
                 random_order = []
-                for _ in range(0, 10000):
+                random_total = 15000
+                for n in range(0, random_total):
                         
                         #Randomly generate a user from master list
                         random_user = random.choice(master_list)
@@ -207,13 +230,11 @@ def create_csv_data():
                         usercountry = random_user[3]
                         #Generate incremented order id, insert into random_order[0]
                         orderid = incr_id("o")
-                        #[0, 0, Agnes, ###PRODUCT STUFF #####, Starsburg, France]
                         #Randomly generate productid, product_name, product_category
                         random_product = random.choice(products_list)
                         while(not len(random_product)>3):
                             random_product = random.choice(products_list)
                         
-                        # [452345435, "NAME OF PRODUCT", "Category", price]
                         # #We need to insert the contents of random_product into INDEX 3 inside random_order
                         productid = random_product[0]
                         productname = random_product[1]
@@ -229,21 +250,19 @@ def create_csv_data():
                         txnid = uuid_id_generator()
                         #Payment Success
                         paymentSuc = get_success_or_fail()#(Y/N, reason for N)
-                        paymenttype = random.choice(["1", "2", "3"])
+                        paymenttype = random.choice(["Paypal", "Credit Card", "Debit Card", "Amazon Pay", "Apple Pay"])
                         random_order = [orderid, userid, username, productid, productname, productcat, paymenttype, quantity, 
                                         productprice, datetime, usercity, usercountry, ecom_website, txnid, paymentSuc[0], paymentSuc[1]]
-                                
-                                
-                        # 
+                        
+                        rogue_chance = random.choices([1, 0], weights=(100,5))[0]
+                        
+                        if rogue_chance == 0:
+                            random_order = rogue_data(random_order)
+                                  
 
                         # write 1 row
                         writer.writerow(random_order)
         
-        
-                
-
-
-#Call construct_master_list
 
 create_csv_data()
 #Timer end
@@ -252,5 +271,4 @@ end = timer()
 #Print elapsed time (seconds)
 print(f"Approximate Processing Time: {end - start}")
 
-#Show Master List
-# print(master_list[:s50])
+
