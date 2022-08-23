@@ -108,8 +108,6 @@ clean_DF.show()
 
 #############START QUERIES HERE################## cd into Analysis_PT2 to run!
 
-
-
 ####JORDAN######
 def q1(df):
     df.createOrReplaceTempView("data")
