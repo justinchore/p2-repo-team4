@@ -107,11 +107,17 @@ clean_DF = orders_df_w_date.filter(txn_success_filter)\
 clean_DF.show()
 
 #############START QUERIES HERE################## cd into Analysis_PT2 to run!
+
+
+
+####JORDAN######
 def q1(df):
     df.createOrReplaceTempView("data")
     spark.sql("SELECT SUM(Quantity) as numSold, Country, ProductCategory FROM data GROUP BY Country, ProductCategory").toDF("numSold", "Country", "ProductCategory").createOrReplaceTempView("temp")
     spark.sql("SELECT MAX(numSold), Country FROM temp GROUP BY Country").toDF("numSold", "Country").createOrReplaceTempView("temp2")
     print(spark.sql("SELECT temp2.Country, temp.ProductCategory, temp2.numSold FROM temp2 LEFT JOIN temp ON temp2.numSold=temp.numSold ORDER BY numSold").show(500))
+    
+    
 #ALL QUERIES FOR ANDREW MVP QUESTIONS + EXTRA###
 clean_DF.createOrReplaceTempView("Data")
 clean_DF2 = spark.sql("SELECT datetime,product_category,product_name,quantity,state FROM Data")
@@ -137,3 +143,24 @@ q1DFS=spark.sql("SELECT state,product_category AS Brand, product_name AS Model,C
 q2DFS=spark.sql("SELECT state,product_category AS Brand, product_name AS Model,COUNT(product_name) AS Orders,SUM(quantity) AS TotalProductsSold FROM date_category_count WHERE new_date BETWEEN '2021-04-01' AND '2021-06-30' GROUP BY state,product_category,product_name ORDER BY SUM(quantity) DESC LIMIT 5").show()
 q3DFS=spark.sql("SELECT state,product_category AS Brand, product_name AS Model,COUNT(product_name) AS Orders,SUM(quantity) AS TotalProductsSold FROM date_category_count WHERE new_date BETWEEN '2021-07-01' AND '2021-09-30' GROUP BY state,product_category,product_name ORDER BY SUM(quantity) DESC LIMIT 5").show()
 q4DFS=spark.sql("SELECT state,product_category AS Brand, product_name AS Model,COUNT(product_name) AS Orders,SUM(quantity) AS TotalProductsSold FROM date_category_count WHERE new_date BETWEEN '2021-10-01' AND '2021-12-31' GROUP BY state,product_category,product_name ORDER BY SUM(quantity) DESC LIMIT 5").show()
+
+####JUSTINS#######
+
+#What times have the highest traffic of sales
+
+#split string step
+id_time_df = clean_DF.withColumn('time', split("datetime", " ")[1])\
+    .select('order_id', "time")
+
+#make into timestamp, add dummy "date" 
+formatted_time_df = id_time_df.withColumn("timestamp",  date_format(col("time"), 'HH:mm')\
+    .cast(TimestampType()))\
+    .select("order_id", "timestamp")
+
+# formatted_time_df.printSchema()
+# formatted_time_df.show()
+
+formatted_time_df.groupBy(hour("timestamp").alias("hour"))\
+    .agg(count("order_id").alias('order_traffic'))\
+    .sort('hour')\
+    .show()    
