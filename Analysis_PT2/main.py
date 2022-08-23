@@ -113,8 +113,6 @@ clean_DF.createOrReplaceTempView('data')
 
 #############START QUERIES HERE################## cd into Analysis_PT2 to run!
 
-cwd = os.getcwd()
-print(cwd)
 ####JORDAN######
 print("Jordan's")
 def q1():
@@ -159,9 +157,8 @@ print("Justin's")
 id_time_df = clean_DF.withColumn('time', split("datetime", " ")[1])\
     .select('order_id', "time")
 
-#make into timestamp, add dummy "date" 
-formatted_time_df = id_time_df.withColumn("timestamp",  date_format(col("time"), 'HH:mm')\
-    .cast(TimestampType()))\
+#make into timestamp, add formatted time 
+formatted_time_df = id_time_df.withColumn("timestamp",  date_format(col("time"), 'HH:mm').cast(TimestampType()))\
     .select("order_id", "timestamp")
 
 # formatted_time_df.printSchema()
@@ -172,7 +169,7 @@ formatted_time_df.groupBy(hour("timestamp").alias("hour"))\
     .agg(count("order_id").alias('order_traffic'))\
     .sort('hour')\
     .show(5)    
-    
+
 ######What states with the highest traffic of sales
 print("AdeTunji's")
 highest_traffic_state = spark.sql(" select state , count(state) as qty  from data group by state order by qty desc")
