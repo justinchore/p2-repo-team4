@@ -178,3 +178,6 @@ highest_traffic_state.show()
 ######What cities with the highest traffic of sales
 highest_traffic_city = spark.sql("select city, count(city) as qty from table group by city order by qty desc ")
 highest_traffic_city.show()
+
+"""highest_traffic_state.coalesce(1).write.csv("file:/USER/output_states")
+highest_traffic_city.coalesce(1).write.csv("file:/USER/output_city")"""
