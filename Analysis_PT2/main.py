@@ -106,4 +106,8 @@ clean_DF = orders_df_w_date.filter(txn_success_filter)\
 clean_DF.show()
 
 #############START QUERIES HERE################## cd into Analysis_PT2 to run!
-
+def q1(df):
+    df.createOrReplaceTempView("data")
+    spark.sql("SELECT SUM(Quantity) as numSold, Country, ProductCategory FROM data GROUP BY Country, ProductCategory").toDF("numSold", "Country", "ProductCategory").createOrReplaceTempView("temp")
+    spark.sql("SELECT MAX(numSold), Country FROM temp GROUP BY Country").toDF("numSold", "Country").createOrReplaceTempView("temp2")
+    print(spark.sql("SELECT temp2.Country, temp.ProductCategory, temp2.numSold FROM temp2 LEFT JOIN temp ON temp2.numSold=temp.numSold ORDER BY numSold").show(500))
