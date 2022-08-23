@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from datetime import datetime
 # from itertools import count
 # from sqlite3 import Timestamp
