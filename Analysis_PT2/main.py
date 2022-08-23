@@ -176,4 +176,3 @@ highest_traffic_city.show()
 
 """highest_traffic_state.coalesce(1).write.csv("file:/USER/output_states")
 highest_traffic_city.coalesce(1).write.csv("file:/USER/output_city")"""
->>>>>>> 9db2b28789aa868428245468e5a0a103226fd8e0
