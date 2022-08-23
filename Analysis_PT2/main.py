@@ -16,16 +16,20 @@ spark.sparkContext.setLogLevel("WARN")
 #Read file with inferred Schema:
 #Comment out others and run your csv file initialization here:
 
-#JUSTINS SPARK.READ:
+##JUSTINS SPARK.READ:
 orders_df = spark.read.format("csv")\
     .option("header", "true")\
     .option("inferSchema", "true")\
-    .load("file:/home/jcho/project_2/p2_Team2_Data.csv")
+    .load("file:/home/jcho/project_2/p2_Team2_Data.csv")"""
 
 #JORDANS SPARK.READ:
 
 #ADETUNJIS SPARK.READ:
-
+df = spark.read.format("csv")\
+    .option("header", "true")\
+    .option("inferSchema", "true")\
+    .csv("file:/home/adetunjimofobi/p2.csv")
+"""
 #ANDREWS SPARK.READ:
 
 #NILESHS SPARK.READ:
@@ -163,4 +167,14 @@ formatted_time_df = id_time_df.withColumn("timestamp",  date_format(col("time"),
 formatted_time_df.groupBy(hour("timestamp").alias("hour"))\
     .agg(count("order_id").alias('order_traffic'))\
     .sort('hour')\
-    .show()    
+    .show()
+
+######What states with the highest traffic of sales
+df.createOrReplaceTempView("table")
+
+highest_traffic_state = spark.sql(" select state , count(state) as qty  from table where state IN ('South Carolina','Mississippi','Virginia','West Virginia','kentucky','Alabama','North Carolina','Arkansas','Louisiana','Tennessee','Florida','Georgia','Hawaii') group by state order by qty desc")
+highest_traffic_state.show()
+
+######What cities with the highest traffic of sales
+highest_traffic_city = spark.sql("select city, count(city) as qty from table group by city order by qty desc ")
+highest_traffic_city.show()
