@@ -49,6 +49,13 @@ txn_id_regex = "(?i)[a-z]{2}\-[0-9]{6}"
 valid_states = ['South Carolina','Mississippi','Virginia','West Virginia','kentucky','Alabama','North Carolina','Arkansas','Louisiana','Tennessee','Florida','Georgia','Hawaii']
 valid_categories = ['Nissan', 'Toyota', 'Honda', 'Ford', 'Chevrolet', 'Jeep', 'Tesla', 'GMC', 'Hyundai', 'Ram', 'Mazda', 'Subaru', 'Pontiac', 'Wrangler']
 
+#Converting Time to AM/PM 12-HOUR FORMAT
+def convert_time(v):
+    h = str(v) + ":00"
+    d = datetime.strptime(h, "%H:%M")
+    d2 = d.strftime("%I:%M %p")
+    return (d2)
+
 #MAP FUNCTION FOR RDD:
 def rdd_date_format(r): 
     if r[9] != None:
@@ -163,66 +170,73 @@ formatted_time_df = id_time_df.withColumn("timestamp",  date_format(col("time"),
 # formatted_time_df.printSchema()
 # formatted_time_df.show()
 
+# Get rid of null values
 dropped_null = formatted_time_df.groupBy(hour("timestamp").alias("hour"))\
     .agg(count("order_id").alias('order_traffic'))\
     .sort('hour')\
     .na.drop()
     
-def convert_date(v):
-    h = str(v) + ":00"
-    d = datetime.strptime(h, "%H:%M")
-    d2 = d.strftime("%I:%M %p")
-    return (d2)
-
-formatted_time_rdd = dropped_null.rdd.map(lambda row: (convert_date(row[0]), row[1]))
+# Convert times into AM/PM 12H
+formatted_time_rdd = dropped_null.rdd.map(lambda row: (convert_time(row[0]), row[1]))
 formatted_time_rdd.toDF(['Time', 'OrderTraffic']).show(24)
 
 
     
-##Which times have the highest traffic of sales by country(state)?
+##Which times have the highest traffic of sales by state?
 
 #1. Use steps #1 - #2 from previous question
-#2. Group by country(state) and count( orders)
+#2. Group by state and count( orders)
 split_time_df = clean_DF.withColumn('time', split("datetime", " ")[1])\
     .select('order_id', 'time', 'state')
-split_time_df.show()
+# split_time_df.show()
 
-next_df = split_time_df.withColumn("timestamp",  date_format(col("time"), 'HH:mm')\
+converted_next_df = split_time_df.withColumn("timestamp",  date_format(col("time"), 'HH:mm')\
     .cast(TimestampType()))\
     .select("order_id", "timestamp", "state")
-next_df.show()
-    
-all_states = next_df.select("state").drop_duplicates()
-all_states.show()
+# converted_next_df.show()
+
+# Get unique states from converted_next (1 column)
+all_states = converted_next_df.select("state").drop_duplicates()
+
+# Make a list of states
 all_states_list = all_states.rdd.map(lambda x: x[0]).collect()
-print(all_states_list) #should this be a broadcast variable?
+# print(all_states_list) #should this be a broadcast variable?
 
 
-##empty RDD:
+# Empty RDD for union inside loop:
 emptyRDD = spark.sparkContext.emptyRDD()
-##empty dataframe:
+
+# Empty dataframe schema:
 max_schema = StructType([
     StructField("location", StringType(), True),
     StructField("hour", IntegerType(), True),
     StructField("OrderTraffic", IntegerType(), True)
 ])
 
+## Empty DataFrame Created
 states_max_traffic_times = spark.createDataFrame(emptyRDD, max_schema)
 
+# Iterate through states
 for state in all_states_list:
-    count_orders_df = next_df.filter(col("state") == state)\
+    count_orders_df = converted_next_df.filter(col("state") == state)\
         .groupBy(hour("timestamp").alias("hour"))\
         .agg(count("order_id").alias("orderTraffic"))\
         .withColumn("location", lit(state)).orderBy(col('OrderTraffic').desc())
     
-    max_orders_df = count_orders_df.agg(max(col('OrderTraffic')).alias("OrderTraffic")).join(count_orders_df, "OrderTraffic", "left").select("location", "hour", "OrderTraffic")
-    count_orders_df.show(5)
-    max_orders_df.show()
-    states_max_traffic_times = states_max_traffic_times.unionAll(max_orders_df)
+    max_orders_by_state_df = count_orders_df.agg(max(col('OrderTraffic')).alias("OrderTraffic"))\
+        .join(count_orders_df, "OrderTraffic", "left")\
+        .select("location", "hour", "OrderTraffic")
+    # count_orders_df.show(5)
+    # max_orders_by_state_df.show()
     
-states_max_traffic_times.show()    
-states_rdd = states_max_traffic_times.rdd.map(lambda row: (row[0], convert_date(row[1]), row[2]))
-states_rdd.toDF(['location', 'hour', 'OrderTraffic']).show()
+    # "Append" to empty dataframe
+    states_max_traffic_times = states_max_traffic_times.unionAll(max_orders_by_state_df)
+    
+# states_max_traffic_times.show()
+
+# Convert times into AMPM(12H)    
+states_and_max_traffic = states_max_traffic_times.rdd.map(lambda row: (row[0], convert_time(row[1]), row[2]))
+states_and_max_traffic.toDF(['location', 'hour', 'OrderTraffic']).show()
 
 ######What states with the highest traffic of sales
 print("AdeTunji's")
