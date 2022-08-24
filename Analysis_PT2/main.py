@@ -151,24 +151,78 @@ q4DFS=spark.sql("SELECT state,product_category AS Brand, product_name AS Model,C
 
 ####JUSTINS#######
 print("Justin's")
-#What times have the highest traffic of sales
-
 #split string step
 id_time_df = clean_DF.withColumn('time', split("datetime", " ")[1])\
     .select('order_id', "time")
 
-#make into timestamp, add formatted time 
-formatted_time_df = id_time_df.withColumn("timestamp",  date_format(col("time"), 'HH:mm').cast(TimestampType()))\
+#make into timestamp, add dummy "date" 
+formatted_time_df = id_time_df.withColumn("timestamp",  date_format(col("time"), 'HH:mm')\
+    .cast(TimestampType()))\
     .select("order_id", "timestamp")
 
 # formatted_time_df.printSchema()
 # formatted_time_df.show()
 
-
-formatted_time_df.groupBy(hour("timestamp").alias("hour"))\
+dropped_null = formatted_time_df.groupBy(hour("timestamp").alias("hour"))\
     .agg(count("order_id").alias('order_traffic'))\
     .sort('hour')\
-    .show(5)    
+    .na.drop()
+    
+def convert_date(v):
+    h = str(v) + ":00"
+    d = datetime.strptime(h, "%H:%M")
+    d2 = d.strftime("%I:%M %p")
+    return (d2)
+
+formatted_time_rdd = dropped_null.rdd.map(lambda row: (convert_date(row[0]), row[1]))
+formatted_time_rdd.toDF(['Time', 'OrderTraffic']).show(24)
+
+
+    
+##Which times have the highest traffic of sales by country(state)?
+
+#1. Use steps #1 - #2 from previous question
+#2. Group by country(state) and count( orders)
+split_time_df = clean_DF.withColumn('time', split("datetime", " ")[1])\
+    .select('order_id', 'time', 'state')
+split_time_df.show()
+
+next_df = split_time_df.withColumn("timestamp",  date_format(col("time"), 'HH:mm')\
+    .cast(TimestampType()))\
+    .select("order_id", "timestamp", "state")
+next_df.show()
+    
+all_states = next_df.select("state").drop_duplicates()
+all_states.show()
+all_states_list = all_states.rdd.map(lambda x: x[0]).collect()
+print(all_states_list) #should this be a broadcast variable?
+
+
+##empty RDD:
+emptyRDD = spark.sparkContext.emptyRDD()
+##empty dataframe:
+max_schema = StructType([
+    StructField("location", StringType(), True),
+    StructField("hour", IntegerType(), True),
+    StructField("OrderTraffic", IntegerType(), True)
+])
+
+states_max_traffic_times = spark.createDataFrame(emptyRDD, max_schema)
+
+for state in all_states_list:
+    count_orders_df = next_df.filter(col("state") == state)\
+        .groupBy(hour("timestamp").alias("hour"))\
+        .agg(count("order_id").alias("orderTraffic"))\
+        .withColumn("location", lit(state)).orderBy(col('OrderTraffic').desc())
+    
+    max_orders_df = count_orders_df.agg(max(col('OrderTraffic')).alias("OrderTraffic")).join(count_orders_df, "OrderTraffic", "left").select("location", "hour", "OrderTraffic")
+    count_orders_df.show(5)
+    max_orders_df.show()
+    states_max_traffic_times = states_max_traffic_times.unionAll(max_orders_df)
+    
+states_max_traffic_times.show()    
+states_rdd = states_max_traffic_times.rdd.map(lambda row: (row[0], convert_date(row[1]), row[2]))
+states_rdd.toDF(['location', 'hour', 'OrderTraffic']).show()
 
 ######What states with the highest traffic of sales
 print("AdeTunji's")
