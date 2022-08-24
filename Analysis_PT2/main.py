@@ -266,8 +266,8 @@ location_sales = spark.sql("SELECT city, SUM(quantity*price) AS sales FROM data 
 
 
 ##########MOST COMMON REASON FOR PAYMENT FAILURE#########
-#####OPTION FOR OVERWRITE WRITE OPTION THING####
-#####Writes all together?#####
+clean_DF.select().filter(col("payment_txn_success") == "N").show()
+
 #####CAST TO INT FOR FLOATS?#######
 #####100ROWS FOR NILESH#####
 
