@@ -231,11 +231,15 @@ for state in all_states_list:
     count_orders_df = converted_next_df.filter(col("state") == state)\
         .groupBy(hour("timestamp").alias("hour"))\
         .agg(count("order_id").alias("orderTraffic"))\
-        .withColumn("location", lit(state)).orderBy(col('OrderTraffic').desc())
+        .withColumn("location", lit(state)).orderBy(col('OrderTraffic').desc()).limit(10)
+    count_orders_df_conv = count_orders_df.rdd.map(lambda row: (convert_time(row[0]), row[1], row[2])).toDF(['hour', 'orderTraffic', 'location'])
+    count_orders_df_conv.show()
+    # write_to_file(count_orders_df_conv,"file:/home/jcho/project_2",f"p2_question3_{state}.csv")
     
     max_orders_by_state_df = count_orders_df.agg(max(col('OrderTraffic')).alias("OrderTraffic"))\
         .join(count_orders_df, "OrderTraffic", "left")\
         .select("location", "hour", "OrderTraffic")
+
     # count_orders_df.show(5)
     # max_orders_by_state_df.show()
     
@@ -263,10 +267,16 @@ highest_traffic_city.coalesce(1).write.csv("file:/USER/output_city")"""
 #########Which locations have the highest sales?#####
 print('Nilesh:')
 location_sales = spark.sql("SELECT city, SUM(quantity*price) AS sales FROM data WHERE payment_txn_success = 'Y' GROUP BY city ORDER BY sales DESC") #100
-
+print("-----------------------")
 
 ##########MOST COMMON REASON FOR PAYMENT FAILURE#########
-clean_DF.select().filter(col("payment_txn_success") == "N").show()
+failure_N_DF = clean_DF.select("failure_reason").where("payment_txn_success != 'Y'")
+failure_N_DF.show()
+print(failure_N_DF.count())
+failure_reasons_counts = failure_N_DF.groupBy('failure_reason').agg(count(col("failure_reason")).alias("reasonCount"))
+failure_final = failure_reasons_counts.filter(col("reasonCount") > 1).orderBy(col("reasonCount").desc())
+
+
 
 #####CAST TO INT FOR FLOATS?#######
 #####100ROWS FOR NILESH#####
@@ -289,3 +299,4 @@ clean_DF.select().filter(col("payment_txn_success") == "N").show()
 # write_to_file(highest_traffic_state,"file:/home/jcho/project_2","p2_question4_sales_traffic_state.csv")
 # write_to_file(highest_traffic_city,"file:/home/jcho/project_2","p2_question4_sales_traffic_city.csv")
 # write_to_file(location_sales,"file:/home/jcho/project_2","p2_question4_sales_nilesh.csv")
+write_to_file(failure_final,"file:/home/jcho/project_2","p2_top_failure_reasons.csv")
